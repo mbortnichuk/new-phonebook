@@ -6,18 +6,30 @@ import edu.mbortnichuk.newphonebook.model.Person;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Mariana on 07-May-17.
  */
 public class AddressDAO extends AbstractDAO<Address> {
 
+
+    public List<Address> read(Map<String, String> sqlParams, String operator) {
+
+//        SELECT * FROM new_phonebook.address WHERE
+//                country = France and
+//                city = Lion
+
+
+        return  null;
+    }
+
     @Override
-    public List<Address> read(String key, String value) {
+    public List<Address> read(String column, String value) {
         Connection connect = null;
         try {
             connect = getConnection();
-            String sql = "SELECT * FROM new_phonebook.address WHERE " + key + " = '" + value + "' ";
+            String sql = "SELECT * FROM new_phonebook.address WHERE " + column + " = '" + value + "' ";
             Statement statement = connect.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
 

@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class RecordDAO extends AbstractDAO<Record> {
 
-    private PersonDAO personDAO = new PersonDAO();
-    private AddressDAO addressDAO = new AddressDAO();
+//    private PersonDAO personDAO = new PersonDAO();
+//    private AddressDAO addressDAO = new AddressDAO();
 
 
     @Override
@@ -102,8 +102,13 @@ public class RecordDAO extends AbstractDAO<Record> {
     @Override
     public Record create(Record record) {
 
-        Person person = personDAO.create(record.getPerson());
-        Address address = addressDAO.create(record.getAddress());
+//        Person person = personDAO.create(record.getPerson());
+//        Address address = addressDAO.create(record.getAddress());
+
+        Person person = record.getPerson();
+        Address address = record.getAddress();
+        if(person.getId() == 0) throw new RuntimeException("Insufficient personID");
+        if(address.getId() == 0) throw new RuntimeException("Insufficient addressID");
 
         Connection connect = null;
         try {
@@ -137,15 +142,19 @@ public class RecordDAO extends AbstractDAO<Record> {
 
     @Override
     public int update(Record record, String key, String value) {
-        Person person = personDAO.create(record.getPerson());
-        Address address = addressDAO.create(record.getAddress());
+//        Person person = personDAO.create(record.getPerson());
+//        Address address = addressDAO.create(record.getAddress());
+        Person person = record.getPerson();
+        Address address = record.getAddress();
+        if(person.getId() == 0) throw new RuntimeException("Insufficient personID");
+        if(address.getId() == 0) throw new RuntimeException("Insufficient addressID");
+
 
         Connection connect = null;
         try {
             connect = getConnection();
-            String sql = "UPDATE new_phonebook.address SET " + " phone='" + person.getPhone() + "', " + " name='" + person.getName() +
-                    "', " + " country='" + address.getCountry() + "', " +
-                    "city='" + address.getCity() + "' " + "WHERE " + key + " = '" + value + "' ";
+            String sql = "UPDATE new_phonebook.record SET " + " person = " + person.getId() + " , " + " address = " + address.getId() +
+                     " WHERE " + key + " = '" + value + "' ";
 
             //phone+rec.getPhone, name+rec.getName, country+rec.getCountry, city+rec.getCity
 
@@ -184,8 +193,12 @@ public class RecordDAO extends AbstractDAO<Record> {
 //        List<Record> read = rec.read("name", "Kat");
 //        System.out.println(read);
 
-//        System.out.println(rec.create(new Record(new Person("Ivy", "022"), new Address("France", "Paris"))));
+      //  System.out.println(rec.create(new Record(new Person("Iola", "343"), new Address("France", "Paris"))));
+
+     //   System.out.println(rec.readALL());
 //
 //          System.out.println(rec.update(rec, "phone", "022"));
+
+        System.out.println(rec.delete("id", "7"));
     }
 }
