@@ -6,8 +6,11 @@ import edu.mbortnichuk.newphonebook.dao.RecordDAO;
 import edu.mbortnichuk.newphonebook.model.Address;
 import edu.mbortnichuk.newphonebook.model.Person;
 import edu.mbortnichuk.newphonebook.model.Record;
+import edu.mbortnichuk.newphonebook.model.SQLOperator;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Mariana on 14-May-17.
@@ -20,14 +23,18 @@ public class DatabaseService {
 
     public Record createRecord(Record record) {
         Person person = personDAO.create(record.getPerson());
-        List<Address> adrId = addressDAO.read("id", "" + record.getAddress().getId());
+        Map<String, String> map = new HashMap<>();
+        map.put("country", record.getAddress().getCountry());
+        map.put("city", record.getAddress().getCity());
+//        List<Address> adrId = addressDAO.read("id", "" + record.getAddress().getId());
+        List<Address> addressList = addressDAO.read(map, SQLOperator.AND);
 //        List<Address> adrCounrty = addressDAO.read("country", "" + record.getAddress().getCountry());
 //        List<Address> adrCity = addressDAO.read("city", "" + record.getAddress().getCity());
         Address address;
-        if(adrId.size() == 0){
+        if(addressList.size() == 0){
              address = addressDAO.create(record.getAddress());
         }else{
-            address = record.getAddress();
+            address = addressList.get(0);
         }
 
         Record intermidiateRecord = new Record(person, address);
@@ -44,7 +51,10 @@ public class DatabaseService {
     public void deleteRecord(Record record){
         recordDAO.delete("id", "" + record.getId());
         personDAO.delete("id", "" + record.getPerson().getId());
-        addressDAO.delete("id", "" + record.getAddress().getId());
+    }
+
+    public void deletePerson(Person person){
+        personDAO.delete("id", "" + person.getId());
     }
 
     public Person createPerson(Person person){
@@ -72,14 +82,19 @@ public class DatabaseService {
 
     public static void main(String[] args) {
         DatabaseService dbps = new DatabaseService();
-        Record record = new Record(new Person("PO", "21212"), new Address("Ukraine", "Kyiv"));
-        Record persistedRecord = dbps.createRecord(record);
-        System.out.println(persistedRecord);
-        persistedRecord.getAddress().setCity("Srakpil");
-        dbps.updateRecord(persistedRecord);
-        System.out.println(dbps.readRecordById(persistedRecord.getId()));
-        dbps.deleteRecord(persistedRecord);
+//        Record record = new Record(new Person("PO", "21212"), new Address("Ukraine", "Kyiv"));
+//        Record persistedRecord = dbps.createRecord(record);
+//        System.out.println(persistedRecord);
+//        persistedRecord.getAddress().setCity("Srakpil");
+//        dbps.updateRecord(persistedRecord);
+//        System.out.println(dbps.readRecordById(persistedRecord.getId()));
+//        dbps.deleteRecord(persistedRecord);
 
+//        dbps.deletePerson(new Person(14, "PO", "21212"));
+
+//        dbps.deleteRecord(new Record(10, new Person(9, "", ""), new Address(9, "", "")));
+
+        dbps.createRecord(new Record(new Person("HO", "44444"), new Address("Ukraine", "Kyiv")));
 
     }
 }
